@@ -1,0 +1,32 @@
+services:
+  db_warehouse:
+    image: postgres
+    ports:
+      - 5432:5432
+    restart: always
+    volumes:
+      - ./postgres/createSQL/warehouseTabbles:/docker-entrypoint-initdb.d/init.sql
+      - ./db_data:/var/lib/postgresql/data
+    environment:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: 123
+          POSTGRES_DB: postgres
+    networks:
+        - default
+
+
+  warehouse:
+    build: ./
+    ports:
+      - 30004:30004
+    depends_on:
+        - db_gym
+    networks:
+        - skynet
+        - default
+
+networks:
+  skynet:
+    external: true
+  default:
+    external: false
