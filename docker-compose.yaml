@@ -8,9 +8,9 @@ services:
       - ./postgres/createSQL/warehouseTabbles:/docker-entrypoint-initdb.d/init.sql
       - ./db_data:/var/lib/postgresql/data
     environment:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: 123
-          POSTGRES_DB: postgres
+          POSTGRES_USER: "${DB_USER}"
+          POSTGRES_PASSWORD: "${DB_PASSWORD}"
+          POSTGRES_DB: "${DB_NAME}"
     networks:
         - default
 
@@ -20,7 +20,7 @@ services:
     ports:
       - 30004:30004
     depends_on:
-        - db_gym
+        - db_warehouse
     networks:
         - skynet
         - default

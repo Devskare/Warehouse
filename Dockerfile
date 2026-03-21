@@ -1,9 +1,4 @@
-FROM ubuntu:latest
-LABEL authors="daniloo"
-
-ENTRYPOINT ["top", "-b"]
-
-FROM golang:1.25.6-bookworm
+FROM golang:1.25.6-bookworm AS builder
 
 WORKDIR /app
 
@@ -11,6 +6,15 @@ COPY . .
 
 RUN go mod tidy
 
-RUN go build -o /app/exe main.go
+RUN go build -o main ./cmd
 
-CMD ["/app/exe"]
+FROM alpine:latest
+
+COPY --from=builder /app/main /main
+COPY --from=builder /app/.env /main
+
+EXPOSE 30004
+
+CMD ["/main"]
+
+
