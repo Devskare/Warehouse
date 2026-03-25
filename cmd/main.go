@@ -2,7 +2,9 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"time"
+	"warehouse/config"
 	"warehouse/models"
 	"warehouse/postgres/connection"
 	_ "warehouse/postgres/connection"
@@ -11,6 +13,7 @@ import (
 )
 
 func main() {
+	appConf := config.MustLoadConfig()
 
 	ctx := context.Background()
 	conn, err := connection.Connection(ctx)
@@ -51,4 +54,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	fmt.Println(appConf)
 }
