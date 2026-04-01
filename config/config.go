@@ -9,6 +9,7 @@ type AppConfig struct {
 	Name           string `env:"APP_NAME"`
 	Production     bool   `env:"PRODUCTION"`
 	GrpcServerPort string `env:"GRPC_SERVER_PORT"`
+	LogLevel       string `env:"LOG_LEVEL"`
 	Db             DB
 }
 
@@ -28,8 +29,10 @@ func MustLoadConfig(env ...string) *AppConfig {
 	var err error
 	conf := &AppConfig{}
 	err = godotenv.Load(env...)
-	if err != nil {
-		panic(err)
+	if len(env) > 0 {
+		_ = godotenv.Load(env...)
+	} else {
+		_ = godotenv.Load()
 	}
 
 	err = cleanenv.ReadEnv(conf)
