@@ -8,6 +8,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+/* вывод - временное решение, пока не появятся сервисы. После этого будем логгировать. */
 type WHouseRepositoryDB struct {
 	db *sqlx.DB
 }
@@ -19,7 +20,7 @@ func (r *WHouseRepositoryDB) ProductADD(ctx context.Context, product models.Prod
 		(article, product_name, storage_id, delivery_date, expire_date, weight)
 		VALUES (:article, :product_name, :storage_id, :delivery_date, :expire_date, :weight)`
 
-	_, err := r.db.ExecContext(ctx, sqlQuery, product)
+	_, err := r.db.NamedExecContext(ctx, sqlQuery, product)
 	if err != nil {
 		return err
 	}
@@ -32,7 +33,7 @@ func (r *WHouseRepositoryDB) ProductUpdate(ctx context.Context, product models.P
 				 SET   product_name = $1, storage_id = $2, expire_date = $3, weight = $4
 				 WHERE article = $5`
 
-	_, err := r.db.ExecContext(ctx, sqlQuery, product)
+	_, err := r.db.ExecContext(ctx, sqlQuery, product.ProductName, product.StorageID, product.ExpireDate, product.Weight, product.Article)
 	if err != nil {
 		return err
 	}
@@ -40,10 +41,10 @@ func (r *WHouseRepositoryDB) ProductUpdate(ctx context.Context, product models.P
 	return nil
 }
 
-func (r *WHouseRepositoryDB) ProductDelete(ctx context.Context, product models.ProductModel) error {
+func (r *WHouseRepositoryDB) ProductDelete(ctx context.Context, ID int) error {
 	sqlQuery := `DELETE FROM products WHERE article = $1`
 
-	_, err := r.db.ExecContext(ctx, sqlQuery, product)
+	_, err := r.db.ExecContext(ctx, sqlQuery, ID)
 	if err != nil {
 		return err
 	}

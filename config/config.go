@@ -10,7 +10,7 @@ type AppConfig struct {
 	Production     bool   `env:"PRODUCTION"`
 	GrpcServerPort string `env:"GRPC_SERVER_PORT"`
 	LogLevel       string `env:"LOG_LEVEL"`
-	Db             DB
+	DB             DB
 }
 
 type DB struct {
