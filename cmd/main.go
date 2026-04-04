@@ -2,58 +2,56 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"time"
 	"warehouse/config"
-	"warehouse/models"
-	"warehouse/postgres/connection"
-	_ "warehouse/postgres/connection"
-	"warehouse/postgres/createSQL"
-	"warehouse/service"
+	"warehouse/logger"
+	"warehouse/modules/Whouse/models"
+	"warehouse/modules/Whouse/repository"
+	"warehouse/modules/db"
 )
 
 func main() {
+
+	time.Sleep(5 * time.Second)
+
 	appConf := config.MustLoadConfig()
 
+	log := logger.Initlogger(appConf.LogLevel, appConf.Production)
+	log.Info("info")
+
+	sqlDB, err := db.NewSqlDB(log, &appConf.DB)
+	if err != nil {
+		log.Error("failed to connect to database, fatal error ", err)
+		panic(err)
+	}
 	ctx := context.Background()
-	conn, err := connection.Connection(ctx)
-	if err != nil {
-		panic(err)
-	}
-	if err := createSQL.CreateTables(ctx, conn); err != nil {
-		panic(err)
 
-	}
-	var prod models.ProductModel
+	//if err := createSQL.CreateTables(ctx, conn); err != nil { panic(err) }
 
-	prod.Article = 123
-	prod.ProductName = "abc"
-	prod.StorageID = 1
-	prod.DeliveryDate = time.Now()
-	prod.ExpireDate = time.Now().AddDate(0, 0, 1)
-	prod.Weight = 1
-	err = service.ProductADD(ctx, conn, prod)
-	if err != nil {
-		panic(err)
+	testRepo := repository.NewWHouseRepository(sqlDB)
+	test := models.ProductModel{
+		Article:      1,
+		ProductName:  "Test product",
+		StorageID:    2,
+		DeliveryDate: time.Now(),
+		ExpireDate:   time.Now(),
+		Weight:       10.5,
 	}
 
-	err = service.ProductDelete(ctx, conn, prod)
+	err = testRepo.ProductADD(ctx, test)
 	if err != nil {
+		log.Error("failed to add product to database, fatal error ", err)
 		panic(err)
 	}
-
-	err = service.ProductADD(ctx, conn, prod)
+	err = testRepo.ProductUpdate(ctx, test)
 	if err != nil {
+		log.Error("failed to update product to database, fatal error ", err)
 		panic(err)
 	}
-	prod.ProductName = "cba"
-	prod.StorageID = 2
-	prod.ExpireDate = time.Now().AddDate(1, 0, 0)
-	prod.Weight = 5
-	err = service.ProductUpdate(ctx, conn, prod)
+	err = testRepo.ProductDelete(ctx, test.Article)
 	if err != nil {
+		log.Error("failed to delete product from repository, fatal error ", err)
 		panic(err)
 	}
 
-	fmt.Println(appConf)
 }
