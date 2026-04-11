@@ -15,6 +15,7 @@ FROM alpine:latest
 WORKDIR /
 
 COPY --from=builder /app/main .
+COPY --from=builder /app/migrations ./migrations
 
 EXPOSE 30004
 
