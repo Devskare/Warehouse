@@ -29,7 +29,7 @@ func allRepoTests(t *testing.T) {
 	})
 
 	t.Run("ProductAdd", func(t *testing.T) {
-		testProductAdd(t, db, ctx)
+		testProductADD(t, db, ctx)
 	})
 
 	t.Run("ListStorages", func(t *testing.T) {
@@ -87,7 +87,7 @@ func testStorageADD(t *testing.T, db *sqlx.DB, ctx context.Context) {
 	require.InDelta(t, 0.0, storageCheck.CurrentWeight, 0.001)
 }
 
-func testProductAdd(t *testing.T, db *sqlx.DB, ctx context.Context) {
+func testProductADD(t *testing.T, db *sqlx.DB, ctx context.Context) {
 	//подготавливаем дб и продукт.
 	///////////////////////////////////////
 	cleanDB(t, db)
@@ -407,53 +407,3 @@ func testProductDelete(t *testing.T, db *sqlx.DB, ctx context.Context) {
 
 	require.InDelta(t, 0, storage.CurrentWeight, 0.001)
 }
-
-/*
-func TestRepo(t *testing.T) {
-	testDB := integration.StartTestDB(t)
-
-	testRepo := NewWHouseRepository(testDB.DB)
-	now := time.Now().UTC()
-
-	testProduct := models.ProductModel{
-		Article:      1,
-		ProductName:  "Test product",
-		StorageID:    1,
-		DeliveryDate: &now,
-		ExpireDate:   &now,
-		Weight:       10.5,
-	}
-	storageTest := models.StorageModel{
-		MaxWeight: 100,
-	}
-
-	err := testRepo.StorageADD(testDB.Ctx, storageTest.MaxWeight)
-	require.NoError(t, err)
-
-	err = testRepo.StorageADD(testDB.Ctx, storageTest.MaxWeight)
-	require.NoError(t, err)
-
-	err = testRepo.ProductADD(testDB.Ctx, testProduct)
-	require.NoError(t, err)
-
-	testListProducts, err := testRepo.ListProducts(testDB.Ctx)
-	fmt.Println(testListProducts)
-	require.NoError(t, err)
-
-	testListStorages, err := testRepo.ListStorages(testDB.Ctx)
-	fmt.Println(testListStorages)
-	require.NoError(t, err)
-
-	TestGetProduct, err := testRepo.GetProduct(testDB.Ctx, testProduct.Article)
-	fmt.Println(TestGetProduct)
-	require.NoError(t, err)
-
-	testProduct.StorageID = 2
-
-	err = testRepo.ProductUpdate(testDB.Ctx, testProduct)
-	require.NoError(t, err)
-
-	err = testRepo.ProductDelete(testDB.Ctx, testProduct.Article)
-	require.NoError(t, err)
-}
-*/
