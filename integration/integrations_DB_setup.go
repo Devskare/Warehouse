@@ -23,13 +23,13 @@ import (
 	"github.com/testcontainers/testcontainers-go/wait"
 )
 
-type testDB struct {
+type TestDB struct {
 	DB        *sqlx.DB
 	Container testcontainers.Container
 	Ctx       context.Context
 }
 
-func StartTestDB(t *testing.T) *testDB {
+func StartTestDB(t *testing.T) *TestDB {
 	//сначала находим путь до енв и миграций, также запускаем логгер и конфиги и загружаем миграции.
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	ctx := context.Background()
@@ -105,7 +105,7 @@ func StartTestDB(t *testing.T) *testDB {
 		panic(err)
 	}
 
-	return &testDB{
+	return &TestDB{
 		DB:        testSqlxDB,
 		Container: pgContainer,
 		Ctx:       ctx,

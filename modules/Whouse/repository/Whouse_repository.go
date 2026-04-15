@@ -2,6 +2,8 @@ package repository
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 	"fmt"
 	"warehouse/modules/Whouse/models"
 
@@ -150,7 +152,8 @@ func (r *WHouseRepositoryDB) ProductDelete(ctx context.Context, article int) err
 func (r *WHouseRepositoryDB) ListProducts(ctx context.Context) ([]models.ProductModel, error) {
 	var AllProducts []models.ProductModel
 	sqlQuery := `SELECT id, article, product_name, storage_id, delivery_date, expire_date, weight 
-				 FROM products`
+				 FROM products
+				 ORDER BY id`
 
 	err := r.db.SelectContext(ctx, &AllProducts, sqlQuery)
 	if err != nil {
@@ -162,7 +165,8 @@ func (r *WHouseRepositoryDB) ListProducts(ctx context.Context) ([]models.Product
 func (r *WHouseRepositoryDB) ListStorages(ctx context.Context) ([]models.StorageModel, error) {
 	var AllStorages []models.StorageModel
 	sqlQuery := `SELECT id, max_weight, current_weight 
-				 FROM storages`
+				 FROM storages
+				 ORDER BY id`
 
 	err := r.db.SelectContext(ctx, &AllStorages, sqlQuery)
 	if err != nil {
@@ -179,6 +183,10 @@ func (r *WHouseRepositoryDB) GetProduct(ctx context.Context, article int) (*mode
 
 	err := r.db.GetContext(ctx, &product, sqlQuery, article)
 	if err != nil {
+
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, errors.New("product not found")
+		}
 		return nil, err
 	}
 	return &product, nil

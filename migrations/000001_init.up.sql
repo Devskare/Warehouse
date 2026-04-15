@@ -9,8 +9,8 @@ id SERIAL PRIMARY KEY,
 article INTEGER NOT NULL UNIQUE,
 product_name VARCHAR(255) NOT NULL,
 storage_id INTEGER,
-delivery_date DATE,
-expire_date DATE,
+delivery_date TIMESTAMPTZ,
+expire_date TIMESTAMPTZ,
 weight NUMERIC(15,3) NOT NULL CHECK (weight > 0),
 
 CONSTRAINT fk_products_storage
