@@ -5,7 +5,7 @@ services:
       - "5432:5432"
     restart: always
     volumes:
-      - ./modules/db/createSQL/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./migrations/000001_init.up.sql:/docker-entrypoint-initdb.d/000001_init.up.sql
       - pg_data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: ${DB_USER}

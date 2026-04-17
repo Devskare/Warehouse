@@ -37,7 +37,7 @@ func NewSqlDB(logger *slog.Logger, cfg *config.DB) (*sqlx.DB, error) {
 		case <-ticker.C:
 			dbRow, err = sql.Open(cfg.Driver, dsn)
 			if err != nil {
-				logger.Error("failed to open sql data base", err.Error())
+				logger.Error("failed to open sql data base", slog.Any("error", err))
 				return nil, err
 			}
 			err = dbRow.Ping()
@@ -46,7 +46,7 @@ func NewSqlDB(logger *slog.Logger, cfg *config.DB) (*sqlx.DB, error) {
 				db.SetMaxOpenConns(cfg.MaxConn)
 				return db, nil
 			}
-			logger.Error("failed to connect sql data base", err.Error())
+			logger.Error("failed to connect sql data base", slog.Any("error", err))
 
 		}
 
