@@ -228,9 +228,8 @@ func (r *WHouseRepositoryDB) GetProduct(ctx context.Context, article int) (*mode
 	if err != nil {
 
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, errors.New("product not found")
+			return nil, err
 		}
-		return nil, err
 	}
 	return &product, nil
 }
