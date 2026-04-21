@@ -9,11 +9,11 @@ import (
 )
 
 type StorageService struct {
-	repo repository.WHouser
+	repo repository.WHouseRepositoryDB
 	log  *slog.Logger
 }
 
-func NewStorageService(repo repository.WHouser, log *slog.Logger) *StorageService {
+func NewStorageService(repo repository.WHouseRepositoryDB, log *slog.Logger) *StorageService {
 	return &StorageService{repo: repo, log: log}
 }
 
