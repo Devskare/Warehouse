@@ -2,20 +2,20 @@ package service
 
 import (
 	"context"
-	"database/sql"
 	"errors"
 	"log/slog"
+	"strings"
 	"time"
 	"warehouse/modules/Whouse/models"
 	"warehouse/modules/Whouse/repository"
 )
 
 type ProductService struct {
-	repo repository.WHouser
+	repo repository.WHouseRepositoryDB
 	log  *slog.Logger
 }
 
-func NewProductService(repo repository.WHouser, log *slog.Logger) *ProductService {
+func NewProductService(repo repository.WHouseRepositoryDB, log *slog.Logger) *ProductService {
 	return &ProductService{repo: repo, log: log}
 }
 
@@ -46,7 +46,7 @@ func (s *ProductService) ProductUpdate(ctx context.Context, p models.ProductMode
 		s.log.Error("Product validation failed", "error", err.Error())
 		return err
 	}
-	if p.StorageID == nil || p.ExpireDate != nil {
+	if p.StorageID == nil && p.ExpireDate != nil {
 		s.log.Error("Product storage ID is nil or product has been expired", "error", "Product storage ID is nil or expired")
 		return errors.New("Product  should have storage id and must be not expired")
 	}
@@ -72,41 +72,6 @@ func (s *ProductService) ProductDelete(ctx context.Context, article int) error {
 
 }
 
-func (s *ProductService) ProductExpire(ctx context.Context, article int) error {
-
-	if article < 1 {
-		s.log.Error("Product article must be greater than zero")
-		return errors.New("article must be greater than zero")
-	}
-
-	product, err := s.repo.GetProduct(ctx, article)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			s.log.Error("Product not found", "error", err.Error())
-			return errors.New("product not found")
-		}
-
-		s.log.Error("Failed to get product", "error", err.Error())
-		return err
-	}
-
-	if product.ExpireDate != nil {
-		s.log.Error("Product already expired")
-		return errors.New("product already expired")
-	}
-
-	now := time.Now().UTC()
-	product.ExpireDate = &now
-
-	err = s.repo.ProductExpire(ctx, *product)
-	if err != nil {
-		s.log.Error("Product expire failed", "error", err.Error())
-		return err
-	}
-
-	return nil
-}
-
 func (s *ProductService) GetProductFromProducts(ctx context.Context, article int) (*models.ProductModel, error) {
 	if article < 1 {
 		s.log.Error("Product id should be greater than zero")
@@ -114,7 +79,7 @@ func (s *ProductService) GetProductFromProducts(ctx context.Context, article int
 	}
 	product, err := s.repo.GetProduct(ctx, article)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
+		if strings.Contains(err.Error(), "product not found") {
 			s.log.Error("Product not found", "error", err.Error())
 			return nil, errors.New("product not found")
 		}
