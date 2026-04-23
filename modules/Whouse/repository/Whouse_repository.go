@@ -42,7 +42,7 @@ func (r *WHouseRepositoryDB) ProductADD(ctx context.Context, product models.Prod
 				 RETURNING current_weight`
 
 	var newWeight float64
-	err = tx.GetContext(ctx, &newWeight, sqlQuery, product.Weight, product.StorageID)
+	err = tx.GetContext(ctx, &newWeight, sqlQuery, product.Weight, *product.StorageID)
 	if err != nil {
 		return fmt.Errorf("storage overflow or not found: %w", err)
 	}
@@ -92,7 +92,7 @@ func (r *WHouseRepositoryDB) ProductUpdate(ctx context.Context, product models.P
 		  		AND current_weight + $1 <= max_weight
 				RETURNING current_weight;`
 
-	err = tx.GetContext(ctx, &garbage, sqlQuery, product.Weight, product.StorageID)
+	err = tx.GetContext(ctx, &garbage, sqlQuery, product.Weight, *product.StorageID)
 	if err != nil {
 		return fmt.Errorf("new storage is overflow!: %w", err)
 	}
@@ -106,6 +106,50 @@ func (r *WHouseRepositoryDB) ProductUpdate(ctx context.Context, product models.P
 		return fmt.Errorf("failed to update product: %w", err)
 	}
 	fmt.Println("Updated product")
+	return tx.Commit()
+
+}
+
+func (r *WHouseRepositoryDB) ProductExpire(ctx context.Context, product models.ProductModel) error {
+	tx, err := r.db.BeginTxx(ctx, nil)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	var weight float64
+	var storageID int
+
+	err = tx.QueryRowContext(ctx, `
+		SELECT weight, storage_id
+		FROM products
+		WHERE article = $1
+		 AND expire_date IS NULL
+		FOR UPDATE
+	`, product.Article).Scan(&weight, &storageID)
+	if err != nil {
+		return fmt.Errorf("failed to lock product: %w", err)
+	}
+
+	sqlQuery := `UPDATE storages
+				 SET current_weight = current_weight - $1
+			 	 WHERE id = $2`
+
+	_, err = tx.ExecContext(ctx, sqlQuery, weight, storageID)
+	if err != nil {
+		return fmt.Errorf("failed to update storage weight: %w", err)
+	}
+
+	sqlQuery = `UPDATE products
+				SET storage_id = NULL,
+				    expire_date = $1
+				WHERE article = $2`
+
+	_, err = tx.ExecContext(ctx, sqlQuery, product.ExpireDate, product.Article)
+	if err != nil {
+		return fmt.Errorf("failed to update product storage_id: %w", err)
+	}
+
 	return tx.Commit()
 
 }
@@ -185,9 +229,8 @@ func (r *WHouseRepositoryDB) GetProduct(ctx context.Context, article int) (*mode
 	if err != nil {
 
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, errors.New("product not found")
+			return nil, err
 		}
-		return nil, err
 	}
 	return &product, nil
 }

@@ -13,4 +13,5 @@ type WHouser interface {
 	ListProducts(ctx context.Context) ([]models.ProductModel, error)
 	ListStorages(ctx context.Context) ([]models.StorageModel, error)
 	GetProduct(ctx context.Context, article int) (*models.ProductModel, error)
+	ProductExpire(ctx context.Context, product models.ProductModel) error
 }

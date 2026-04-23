@@ -46,6 +46,7 @@ func NewSqlDB(logger *slog.Logger, cfg *config.DB) (*sqlx.DB, error) {
 				db.SetMaxOpenConns(cfg.MaxConn)
 				return db, nil
 			}
+			dbRow.Close()
 			logger.Error("failed to connect sql data base", slog.Any("error", err))
 
 		}
