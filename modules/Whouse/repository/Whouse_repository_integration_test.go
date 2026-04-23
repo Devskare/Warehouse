@@ -434,12 +434,14 @@ func testProductExpire(t *testing.T, db *sqlx.DB, ctx context.Context) {
 		ProductName:  "prod1",
 		StorageID:    &storageID,
 		DeliveryDate: &now,
-		ExpireDate:   &now,
+		ExpireDate:   nil,
 		Weight:       10,
 	}
 
 	err = repo.ProductADD(ctx, product)
 	require.NoError(t, err)
+
+	product.ExpireDate = &now
 
 	err = repo.ProductExpire(ctx, product)
 	require.NoError(t, err)

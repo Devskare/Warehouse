@@ -124,6 +124,7 @@ func (r *WHouseRepositoryDB) ProductExpire(ctx context.Context, product models.P
 		SELECT weight, storage_id
 		FROM products
 		WHERE article = $1
+		 AND expire_date IS NULL
 		FOR UPDATE
 	`, product.Article).Scan(&weight, &storageID)
 	if err != nil {
