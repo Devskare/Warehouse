@@ -146,6 +146,7 @@ type Storage struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	MaxWeight     float64                `protobuf:"fixed64,2,opt,name=max_weight,json=maxWeight,proto3" json:"max_weight,omitempty"`
+	CurrentWeight float64                `protobuf:"fixed64,3,opt,name=current_weight,json=currentWeight,proto3" json:"current_weight,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -190,6 +191,13 @@ func (x *Storage) GetId() int64 {
 func (x *Storage) GetMaxWeight() float64 {
 	if x != nil {
 		return x.MaxWeight
+	}
+	return 0
+}
+
+func (x *Storage) GetCurrentWeight() float64 {
+	if x != nil {
+		return x.CurrentWeight
 	}
 	return 0
 }
@@ -560,11 +568,12 @@ const file_warehouse_v1_warehouse_proto_rawDesc = "" +
 	"\rdelivery_date\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\fdeliveryDate\x12;\n" +
 	"\vexpire_date\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\n" +
 	"expireDate\x12\x12\n" +
-	"\x04name\x18\x06 \x01(\tR\x04name\"8\n" +
+	"\x04name\x18\x06 \x01(\tR\x04name\"_\n" +
 	"\aStorage\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x1d\n" +
 	"\n" +
-	"max_weight\x18\x02 \x01(\x01R\tmaxWeight\"D\n" +
+	"max_weight\x18\x02 \x01(\x01R\tmaxWeight\x12%\n" +
+	"\x0ecurrent_weight\x18\x03 \x01(\x01R\rcurrentWeight\"D\n" +
 	"\x11AddProductRequest\x12/\n" +
 	"\aproduct\x18\x01 \x01(\v2\x15.warehouse.v1.ProductR\aproduct\"-\n" +
 	"\x11GetProductRequest\x12\x18\n" +

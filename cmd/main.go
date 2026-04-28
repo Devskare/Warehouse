@@ -7,7 +7,7 @@ import (
 	"warehouse/config"
 	warehousev1 "warehouse/gen/warehouse/v1"
 	"warehouse/logger"
-	"warehouse/modules/Whouse/Whousegrpc"
+	"warehouse/modules/Whouse/Wgrpc"
 	"warehouse/modules/Whouse/repository"
 	"warehouse/modules/Whouse/service"
 	"warehouse/modules/db"
@@ -49,7 +49,7 @@ func initRPC(productService *service.ProductService, storageService *service.Sto
 	s := grpc.NewServer()
 
 	warehousev1.RegisterWarehouseServer(
-		s, Whousegrpc.NewWarehouseServer(productService, storageService),
+		s, Wgrpc.NewWarehouseServer(productService, storageService),
 	)
 	reflection.Register(s)
 	return s
