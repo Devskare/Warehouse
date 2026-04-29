@@ -2,7 +2,8 @@ package repository
 
 import (
 	"context"
-	"warehouse/modules/Whouse/models"
+
+	"github.com/devskar/warehouse/modules/Whouse/models"
 )
 
 type WHouser interface {

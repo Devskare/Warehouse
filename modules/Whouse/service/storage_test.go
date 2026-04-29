@@ -3,10 +3,10 @@ package service
 import (
 	"context"
 	"errors"
+	"github.com/devskar/warehouse/mocks"
+	"github.com/devskar/warehouse/modules/Whouse/models"
 	"log/slog"
 	"testing"
-	"warehouse/mocks"
-	"warehouse/modules/Whouse/models"
 
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"

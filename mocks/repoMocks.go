@@ -2,8 +2,9 @@ package mocks
 
 import (
 	"context"
-	"warehouse/modules/Whouse/models"
-	"warehouse/modules/Whouse/repository"
+
+	"github.com/devskar/warehouse/modules/Whouse/models"
+	"github.com/devskar/warehouse/modules/Whouse/repository"
 
 	"github.com/stretchr/testify/mock"
 )

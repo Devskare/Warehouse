@@ -6,8 +6,9 @@ import (
 	"errors"
 	"log/slog"
 	"time"
-	"warehouse/modules/Whouse/models"
-	"warehouse/modules/Whouse/repository"
+
+	"github.com/devskar/warehouse/modules/Whouse/models"
+	"github.com/devskar/warehouse/modules/Whouse/repository"
 )
 
 type ProductService struct {

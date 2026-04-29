@@ -5,7 +5,8 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"warehouse/modules/Whouse/models"
+
+	"github.com/devskar/warehouse/modules/Whouse/models"
 
 	"github.com/jmoiron/sqlx"
 )

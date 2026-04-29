@@ -2,8 +2,9 @@ package Wgrpc
 
 import (
 	"context"
-	warehousev1 "warehouse/gen/warehouse/v1"
-	"warehouse/modules/Whouse/service"
+
+	warehousev1 "github.com/devskar/warehouse/gen/warehouse/v1"
+	"github.com/devskar/warehouse/modules/Whouse/service"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

@@ -7,8 +7,9 @@ import (
 	"log/slog"
 	"testing"
 	"time"
-	"warehouse/mocks"
-	"warehouse/modules/Whouse/models"
+
+	"github.com/devskar/warehouse/mocks"
+	"github.com/devskar/warehouse/modules/Whouse/models"
 
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
