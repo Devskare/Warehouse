@@ -1,4 +1,4 @@
-module warehouse
+module github.com/devskar/warehouse
 
 go 1.25.6
 

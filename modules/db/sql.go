@@ -3,9 +3,9 @@ package db
 import (
 	"database/sql"
 	"fmt"
+	"github.com/devskar/warehouse/config"
 	"log/slog"
 	"time"
-	"warehouse/config"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"

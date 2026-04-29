@@ -11,6 +11,8 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
+    networks:
+      - skynet
 
   warehouse:
     build: .
@@ -20,6 +22,12 @@ services:
       - db_warehouse
     env_file:
       - .env
+    networks:
+      - skynet
 
 volumes:
   pg_data:
+
+networks:
+  skynet:
+    external: true

@@ -2,7 +2,8 @@ package service
 
 import (
 	"context"
-	"warehouse/modules/Whouse/models"
+
+	"github.com/devskar/warehouse/modules/Whouse/models"
 )
 
 type Product interface {
