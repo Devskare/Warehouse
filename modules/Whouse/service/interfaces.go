@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	"github.com/devskar/warehouse/modules/Whouse/models"
+	"github.com/Devskare/Warehouse/modules/Whouse/models"
 )
 
 type Product interface {

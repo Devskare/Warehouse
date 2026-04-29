@@ -1,8 +1,8 @@
 package Wgrpc
 
 import (
-	warehousev1 "github.com/devskar/warehouse/gen/warehouse/v1"
-	"github.com/devskar/warehouse/modules/Whouse/models"
+	warehousev1 "github.com/Devskare/Warehouse/gen/warehouse/v1"
+	"github.com/Devskare/Warehouse/modules/Whouse/models"
 
 	"google.golang.org/protobuf/types/known/timestamppb"
 )

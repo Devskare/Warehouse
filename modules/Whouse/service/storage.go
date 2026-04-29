@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log/slog"
 
-	"github.com/devskar/warehouse/modules/Whouse/models"
-	"github.com/devskar/warehouse/modules/Whouse/repository"
+	"github.com/Devskare/Warehouse/modules/Whouse/models"
+	"github.com/Devskare/Warehouse/modules/Whouse/repository"
 )
 
 type StorageService struct {
