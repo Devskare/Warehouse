@@ -42,20 +42,48 @@ func (s *ProductService) ProductADD(ctx context.Context, p models.ProductModel) 
 }
 
 func (s *ProductService) ProductUpdate(ctx context.Context, p models.ProductModel) error {
-	err := p.Validate()
+
+	existing, err := s.GetProductFromProducts(ctx, int(p.Article))
 	if err != nil {
-		s.log.Error("Product validation failed", "error", err.Error())
+		s.log.Error("failed to get existing product", "error", err.Error())
 		return err
 	}
-	if p.StorageID == nil || p.ExpireDate != nil {
-		s.log.Error("Product storage ID is nil or product has been expired", "error", "Product storage ID is nil or expired")
-		return errors.New("Product  should have storage id and must be not expired")
+
+	if existing.ExpireDate != nil {
+		s.log.Error("attempt to update expired product",
+			"article", p.Article,
+		)
+		return errors.New("expired product cannot be updated")
 	}
-	err = s.repo.ProductUpdate(ctx, p)
-	if err != nil {
-		s.log.Error("Product update failed", "error", err.Error())
+
+	if p.ProductName != "" {
+		existing.ProductName = p.ProductName
+	}
+
+	if p.Weight != 0 {
+		existing.Weight = p.Weight
+	}
+
+	if p.StorageID != nil {
+		existing.StorageID = p.StorageID
+	}
+
+	if err := existing.Validate(); err != nil {
+		s.log.Error("product validation failed after merge",
+			"article", p.Article,
+			"error", err.Error(),
+		)
 		return err
 	}
+
+	if err := s.repo.ProductUpdate(ctx, *existing); err != nil {
+		s.log.Error("product update failed",
+			"article", p.Article,
+			"error", err.Error(),
+		)
+		return err
+	}
+
 	return nil
 }
 
